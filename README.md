@@ -17,12 +17,14 @@ Não há servidor rodando 24/7 nem webhook do Bear Blog — a detecção é feit
 ## Formato da mensagem publicada
 
 ```
-Título do post - link
+Título do post: link
+
 Meta description do post
 ```
 
-- A primeira linha junta o título e o link do post.
-- A segunda linha é a meta description do post, extraída do campo `summary`/`description` do RSS (com tags HTML removidas).
+- A primeira linha junta o título e o link do post, separados por `:`.
+- Há uma linha em branco entre o título/link e a meta description.
+- A meta description é extraída do campo `summary`/`description` do RSS (com tags HTML removidas).
 - No Bluesky, o link na primeira linha é publicado como link clicável (rich text facet), não como texto simples.
 - Se o post não tiver meta description, só é publicada a primeira linha.
 
