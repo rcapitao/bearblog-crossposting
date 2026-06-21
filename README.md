@@ -2,7 +2,12 @@
 
 Automação que crossposta novos posts do blog [rcapitao.com](https://www.rcapitao.com) (hospedado no Bear Blog) para o **Mastodon** e o **Bluesky**, lendo o feed RSS do blog.
 
-Funciona via GitHub Actions: a cada 20 minutos verifica o feed, deteta posts novos (comparando com `state.json`) e publica neles a mensagem `Título\nLink`.
+Funciona via GitHub Actions: a cada 20 minutos verifica o feed, deteta posts novos (comparando com `state.json`) e publica neles a mensagem no formato:
+
+```
+Título do post - link
+Meta description do post
+```
 
 ## Como funciona
 
