@@ -4,15 +4,15 @@ Automação que crossposta novos posts do blog [rcapitao.com](https://www.rcapit
 
 ## Visão geral
 
-A automação corre como um workflow agendado no GitHub Actions:
+A automação roda como um workflow agendado no GitHub Actions:
 
-1. A cada 20 minutos (ou manualmente), o workflow `.github/workflows/crosspost.yml` arranca uma máquina temporária, instala as dependências Python e corre `crosspost.py`.
+1. A cada 20 minutos (ou manualmente), o workflow `.github/workflows/crosspost.yml` inicia uma máquina temporária, instala as dependências Python e executa `crosspost.py`.
 2. `crosspost.py` lê o feed RSS configurado em `FEED_URL`.
-3. Compara os links dos posts do feed com os já registados em `state.json` (o "registo do que já foi publicado").
+3. Compara os links dos posts do feed com os já registrados em `state.json` (o "registro do que já foi publicado").
 4. Para cada post novo (do mais antigo para o mais recente), publica uma mensagem no Mastodon e no Bluesky.
-5. Atualiza `state.json` com os links recém-publicados e o workflow faz commit + push automático desse ficheiro no repositório.
+5. Atualiza `state.json` com os links recém-publicados e o workflow faz commit + push automático desse arquivo no repositório.
 
-Não há servidor a correr 24/7 nem webhook do Bear Blog — a deteção é por **polling** do feed RSS.
+Não há servidor rodando 24/7 nem webhook do Bear Blog — a detecção é feita por **polling** do feed RSS.
 
 ## Formato da mensagem publicada
 
@@ -34,31 +34,31 @@ Meta description do post
 | Bluesky | ✅ | App Password (AT Protocol) |
 | Threads | ❌ (por agora) | — |
 
-Cada rede é independente: se as variáveis/secrets de uma rede não estiverem definidas, o script simplesmente ignora essa rede e publica só nas restantes (ver `post_to_mastodon` e `post_to_bluesky` em `crosspost.py`).
+Cada rede é independente: se as variáveis/secrets de uma rede não estiverem definidas, o script simplesmente ignora essa rede e publica só nas demais (veja `post_to_mastodon` e `post_to_bluesky` em `crosspost.py`).
 
 ### Sobre o Threads
 
-O Threads (Meta) não tem uma forma simples de publicar sem usar a Threads API oficial, que exige criar uma app no Meta for Developers, associar uma conta Instagram Business e passar por processo de revisão. Por isso não está incluído por agora — pode ser adicionado mais tarde se quiseres avançar com esse processo.
+O Threads (Meta) não tem uma forma simples de publicar sem usar a API oficial do Threads, que exige criar um app no Meta for Developers, vincular uma conta Instagram Business e passar por processo de revisão. Por isso não está incluído por agora — pode ser adicionado depois se você quiser avançar com esse processo.
 
-## Setup
+## Configuração
 
-### 1. Descobrir o URL do feed RSS
+### 1. Descobrir a URL do feed RSS
 
 O feed RSS deste blog está em `https://www.rcapitao.com/feed/`.
 
 ### 2. Criar o token do Mastodon
 
-1. Entra na tua instância Mastodon (web).
-2. Vai a **Preferências → Desenvolvimento → Nova aplicação**.
-3. Dá um nome (ex: `bearblog-crossposting`) e marca o scope `write:statuses`.
-4. Cria a aplicação e copia o **access token** gerado.
-5. Anota também o URL base da tua instância (ex: `https://mastodon.social`).
+1. Entre na sua instância Mastodon (web).
+2. Vá em **Preferências → Desenvolvimento → Nova aplicação**.
+3. Dê um nome (ex: `bearblog-crossposting`) e marque o scope `write:statuses`.
+4. Crie a aplicação e copie o **access token** gerado.
+5. Anote também a URL base da sua instância (ex: `https://mastodon.social`).
 
 ### 3. Criar o App Password do Bluesky
 
-1. Entra em [bsky.app](https://bsky.app) → **Settings → App Passwords**.
-2. Cria um novo App Password (não usar a password principal da conta).
-3. Anota o handle da conta (ex: `rcapitao.bsky.social`) e o App Password gerado.
+1. Entre em [bsky.app](https://bsky.app) → **Settings → App Passwords**.
+2. Crie um novo App Password (não use a senha principal da conta).
+3. Anote o handle da conta (ex: `rcapitao.bsky.social`) e o App Password gerado.
 
 ### 4. Configurar variáveis e secrets no repositório GitHub
 
@@ -73,19 +73,19 @@ Em **Settings → Secrets and variables → Actions** deste repositório:
 - `MASTODON_ACCESS_TOKEN`
 - `BLUESKY_APP_PASSWORD`
 
-Se quiseres usar só uma das duas redes, basta não definir as variáveis/secrets dessa rede — o script ignora-a automaticamente.
+Se você quiser usar só uma das duas redes, basta não definir as variáveis/secrets dessa rede — o script vai ignorá-la automaticamente.
 
 ### 5. Seed inicial (evitar crosspostar todo o histórico)
 
-Antes de ativar o agendamento, marca os posts já existentes como já publicados, sem os postar:
+Antes de ativar o agendamento, marque os posts já existentes como já publicados, sem postá-los:
 
-1. Vai a **Actions → Crosspost new blog posts → Run workflow**.
-2. Marca a opção `seed_only`.
-3. Corre o workflow.
+1. Vá em **Actions → Crosspost new blog posts → Run workflow**.
+2. Marque a opção `seed_only`.
+3. Execute o workflow.
 
-Isto regista todos os posts atuais do feed em `state.json` e faz commit automático desse ficheiro. A partir daí, as execuções seguintes (agendadas ou manuais sem `seed_only`) só vão crosspostar posts realmente novos.
+Isso registra todos os posts atuais do feed em `state.json` e faz commit automático desse arquivo. A partir daí, as execuções seguintes (agendadas ou manuais sem `seed_only`) só vão crosspostar posts realmente novos.
 
-Alternativa local (se preferires correr fora do GitHub Actions):
+Alternativa local (se preferir rodar fora do GitHub Actions):
 
 ```bash
 pip install -r requirements.txt
@@ -98,28 +98,28 @@ git push
 
 ### 6. Ativar o workflow
 
-O workflow `.github/workflows/crosspost.yml` já corre automaticamente a cada 20 minutos depois do push para `main`. Também podes disparar manualmente em **Actions → Crosspost new blog posts → Run workflow**.
+O workflow `.github/workflows/crosspost.yml` já roda automaticamente a cada 20 minutos depois do push para `main`. Você também pode disparar manualmente em **Actions → Crosspost new blog posts → Run workflow**.
 
-## Operação do dia a dia
+## Operação no dia a dia
 
-- **Publicar um post novo no blog** é suficiente — na próxima execução agendada (até 20 min depois) o workflow deteta e crossposta automaticamente.
+- **Publicar um post novo no blog** já é suficiente — na próxima execução agendada (até 20 min depois) o workflow detecta e crossposta automaticamente.
 - **Forçar uma verificação imediata**: **Actions → Crosspost new blog posts → Run workflow** (sem marcar `seed_only`).
-- **Ver o histórico de execuções e logs**: separador **Actions** do repositório.
-- **Confirmar o que já foi publicado**: ficheiro `state.json` na raiz do repositório (lista de links já crosspostados).
-- **Reenviar um post manualmente**: remover o link correspondente de `state.json`, fazer commit/push, e correr o workflow manualmente — o post volta a ser tratado como novo.
-- **Desativar temporariamente**: em **Settings → Actions → General**, desativar as Actions do repositório, ou remover/comentar o gatilho `schedule` no workflow.
+- **Ver o histórico de execuções e logs**: aba **Actions** do repositório.
+- **Confirmar o que já foi publicado**: arquivo `state.json` na raiz do repositório (lista de links já crosspostados).
+- **Reenviar um post manualmente**: remova o link correspondente de `state.json`, faça commit/push, e execute o workflow manualmente — o post volta a ser tratado como novo.
+- **Desativar temporariamente**: em **Settings → Actions → General**, desative as Actions do repositório, ou remova/comente o gatilho `schedule` no workflow.
 
 ## Troubleshooting
 
-- **Nada é publicado**: confirma que `FEED_URL` está correto e acessível publicamente, e que pelo menos um par de credenciais (Mastodon ou Bluesky) está configurado nas secrets/variables.
-- **Erro de autenticação no Mastodon**: o access token pode ter expirado ou não ter o scope `write:statuses` — gera um novo token.
-- **Erro de autenticação no Bluesky**: confirma que `BLUESKY_HANDLE` é o handle completo (ex: `rcapitao.bsky.social`) e que `BLUESKY_APP_PASSWORD` é um App Password válido (não a password da conta).
-- **Posts antigos foram crosspostados de repente**: provavelmente o `state.json` foi perdido ou nunca foi seedado — repete o passo de seed inicial.
-- **O workflow falha ao fazer commit do `state.json`**: confirma que a permissão `contents: write` está definida no workflow (já está por defeito neste repositório) e que não há proteção de branch a bloquear pushes diretos do `github-actions[bot]`.
+- **Nada é publicado**: confirme que `FEED_URL` está correto e acessível publicamente, e que pelo menos um par de credenciais (Mastodon ou Bluesky) está configurado nas secrets/variables.
+- **Erro de autenticação no Mastodon**: o access token pode ter expirado ou não ter o scope `write:statuses` — gere um novo token.
+- **Erro de autenticação no Bluesky**: confirme que `BLUESKY_HANDLE` é o handle completo (ex: `rcapitao.bsky.social`) e que `BLUESKY_APP_PASSWORD` é um App Password válido (não a senha da conta).
+- **Posts antigos foram crosspostados de repente**: provavelmente o `state.json` foi perdido ou nunca foi seedado — repita o passo de seed inicial.
+- **O workflow falha ao fazer commit do `state.json`**: confirme que a permissão `contents: write` está definida no workflow (já está por padrão neste repositório) e que não há proteção de branch bloqueando pushes diretos do `github-actions[bot]`.
 
 ## Estrutura
 
 - `crosspost.py` — script principal: lê o feed, decide o que é novo, publica e atualiza o estado.
 - `requirements.txt` — dependências Python (`feedparser`, `requests`).
-- `state.json` — registo dos posts já crosspostados (atualizado automaticamente pelo workflow).
+- `state.json` — registro dos posts já crosspostados (atualizado automaticamente pelo workflow).
 - `.github/workflows/crosspost.yml` — workflow agendado do GitHub Actions, com gatilho `schedule` e `workflow_dispatch` (incluindo a opção `seed_only`).
