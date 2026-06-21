@@ -53,11 +53,11 @@ def get_meta_description(entry) -> str:
 
 
 def build_message(entry) -> str:
-    first_line = f"{entry.title} - {entry.link}"
+    first_line = f"{entry.title}: {entry.link}"
     description = get_meta_description(entry)
     if not description:
         return first_line
-    return f"{first_line}\n{description}"
+    return f"{first_line}\n\n{description}"
 
 
 def post_to_mastodon(message: str) -> None:
@@ -94,7 +94,7 @@ def post_to_bluesky(entry, message: str) -> None:
 
     import datetime
 
-    link_prefix = f"{entry.title} - "
+    link_prefix = f"{entry.title}: "
     byte_start = len(link_prefix.encode())
     byte_end = byte_start + len(entry.link.encode())
 
