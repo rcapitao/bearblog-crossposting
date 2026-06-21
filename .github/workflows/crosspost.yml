@@ -3,7 +3,12 @@ name: Crosspost new blog posts
 on:
   schedule:
     - cron: "*/20 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      seed_only:
+        description: "Seed state.json with existing posts without posting them"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -34,6 +39,7 @@ jobs:
           MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
           BLUESKY_HANDLE: ${{ vars.BLUESKY_HANDLE }}
           BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+          SEED_ONLY: ${{ inputs.seed_only && '1' || '' }}
         run: python crosspost.py
 
       - name: Commit updated state

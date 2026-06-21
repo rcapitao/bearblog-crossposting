@@ -48,23 +48,24 @@ Se quiseres usar só uma das duas redes, basta não definir as variáveis/secret
 
 ### 5. Seed inicial (evitar crosspostar todo o histórico)
 
-Antes de ativar o agendamento, corre uma vez localmente em modo "seed" para marcar os posts já existentes como já publicados, sem os postar:
+Antes de ativar o agendamento, marca os posts já existentes como já publicados, sem os postar:
+
+1. Vai a **Actions → Crosspost new blog posts → Run workflow**.
+2. Marca a opção `seed_only`.
+3. Corre o workflow.
+
+Isto regista todos os posts atuais do feed em `state.json` e faz commit automático desse ficheiro. A partir daí, as execuções seguintes (agendadas ou manuais sem `seed_only`) só vão crosspostar posts realmente novos.
+
+Alternativa local (se preferires correr fora do GitHub Actions):
 
 ```bash
 pip install -r requirements.txt
 export FEED_URL="https://www.rcapitao.com/feed/"
 SEED_ONLY=1 python crosspost.py
-```
-
-Isto regista todos os posts atuais do feed em `state.json`. Faz commit e push desse `state.json` atualizado:
-
-```bash
 git add state.json
 git commit -m "Seed crosspost state with existing posts"
 git push
 ```
-
-A partir daí, o workflow agendado só vai crosspostar posts realmente novos.
 
 ### 6. Ativar o workflow
 
