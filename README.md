@@ -25,8 +25,9 @@ Meta description do post
 - A primeira linha junta o título e o link do post, separados por `:`.
 - Há uma linha em branco entre o título/link e a meta description.
 - A meta description é extraída do campo `summary`/`description` do RSS (com tags HTML removidas).
+- Se o post não tiver meta description, é usado o conteúdo completo do post (campo `content` do RSS, com tags HTML removidas) na segunda parte da mensagem.
 - No Bluesky, o link na primeira linha é publicado como link clicável (rich text facet), não como texto simples.
-- Se o post não tiver meta description, só é publicada a primeira linha.
+- Se o post não tiver meta description nem conteúdo, só é publicada a primeira linha.
 
 ## Redes suportadas
 

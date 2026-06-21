@@ -49,7 +49,13 @@ def fetch_new_entries(posted_ids: set):
 
 def get_meta_description(entry) -> str:
     summary = getattr(entry, "summary", "") or ""
-    return re.sub(r"<[^>]+>", "", summary).strip()
+    description = re.sub(r"<[^>]+>", "", summary).strip()
+    if description:
+        return description
+
+    content_list = getattr(entry, "content", None) or []
+    content = content_list[0].value if content_list else ""
+    return re.sub(r"<[^>]+>", "", content).strip()
 
 
 def build_message(entry) -> str:
