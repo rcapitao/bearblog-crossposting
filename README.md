@@ -1,6 +1,6 @@
 # bearblog-crossposting
 
-Automação que crossposta novos posts do blog [rcapitao.com](https://rcapitao.com) (hospedado no Bear Blog) para o **Mastodon** e o **Bluesky**, lendo o feed RSS do blog.
+Automação que crossposta novos posts do blog [rcapitao.com](https://www.rcapitao.com) (hospedado no Bear Blog) para o **Mastodon** e o **Bluesky**, lendo o feed RSS do blog.
 
 Funciona via GitHub Actions: a cada 20 minutos verifica o feed, deteta posts novos (comparando com `state.json`) e publica neles a mensagem `Título\nLink`.
 
@@ -15,7 +15,7 @@ Funciona via GitHub Actions: a cada 20 minutos verifica o feed, deteta posts nov
 
 ### 1. Descobrir o URL do feed RSS
 
-No Bear Blog, o feed costuma estar em `https://rcapitao.com/feed/`. Confirma abrindo esse URL no browser.
+O feed RSS deste blog está em `https://www.rcapitao.com/feed/`.
 
 ### 2. Criar o token do Mastodon
 
@@ -36,7 +36,7 @@ No Bear Blog, o feed costuma estar em `https://rcapitao.com/feed/`. Confirma abr
 Em **Settings → Secrets and variables → Actions** deste repositório:
 
 **Variables** (não sensíveis):
-- `FEED_URL` — ex: `https://rcapitao.com/feed/`
+- `FEED_URL` — ex: `https://www.rcapitao.com/feed/`
 - `MASTODON_BASE_URL` — ex: `https://mastodon.social`
 - `BLUESKY_HANDLE` — ex: `rcapitao.bsky.social`
 
@@ -52,7 +52,7 @@ Antes de ativar o agendamento, corre uma vez localmente em modo "seed" para marc
 
 ```bash
 pip install -r requirements.txt
-export FEED_URL="https://rcapitao.com/feed/"
+export FEED_URL="https://www.rcapitao.com/feed/"
 SEED_ONLY=1 python crosspost.py
 ```
 
