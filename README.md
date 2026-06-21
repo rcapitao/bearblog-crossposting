@@ -6,7 +6,7 @@ Automação que crossposta novos posts do blog [rcapitao.com](https://www.rcapit
 
 A automação roda como um workflow agendado no GitHub Actions:
 
-1. A cada 20 minutos (ou manualmente), o workflow `.github/workflows/crosspost.yml` inicia uma máquina temporária, instala as dependências Python e executa `crosspost.py`.
+1. A cada 30 minutos, das 08h às 23h no horário de Brasília (ou manualmente), o workflow `.github/workflows/crosspost.yml` inicia uma máquina temporária, instala as dependências Python e executa `crosspost.py`. Fora desse intervalo (23h-08h) o workflow não roda, para não gerar execuções à toa de madrugada.
 2. `crosspost.py` lê o feed RSS configurado em `FEED_URL`.
 3. Compara os links dos posts do feed com os já registrados em `state.json` (o "registro do que já foi publicado").
 4. Para cada post novo (do mais antigo para o mais recente), publica uma mensagem no Mastodon e no Bluesky.
@@ -101,11 +101,11 @@ git push
 
 ### 6. Ativar o workflow
 
-O workflow `.github/workflows/crosspost.yml` já roda automaticamente a cada 20 minutos depois do push para `main`. Você também pode disparar manualmente em **Actions → Crosspost new blog posts → Run workflow**.
+O workflow `.github/workflows/crosspost.yml` já roda automaticamente a cada 30 minutos, das 08h às 23h (horário de Brasília), depois do push para `main`. Você também pode disparar manualmente em **Actions → Crosspost new blog posts → Run workflow**.
 
 ## Operação no dia a dia
 
-- **Publicar um post novo no blog** já é suficiente — na próxima execução agendada (até 20 min depois) o workflow detecta e crossposta automaticamente.
+- **Publicar um post novo no blog** já é suficiente — na próxima execução agendada (até 30 min depois, dentro do intervalo das 08h-23h) o workflow detecta e crossposta automaticamente. Se publicar fora desse intervalo, a postagem é detectada na primeira execução após as 08h.
 - **Forçar uma verificação imediata**: **Actions → Crosspost new blog posts → Run workflow** (sem marcar `seed_only`).
 - **Ver o histórico de execuções e logs**: aba **Actions** do repositório.
 - **Confirmar o que já foi publicado**: arquivo `state.json` na raiz do repositório (lista de links já crosspostados).

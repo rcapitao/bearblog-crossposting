@@ -2,7 +2,8 @@ name: Crosspost new blog posts
 
 on:
   schedule:
-    - cron: "*/20 * * * *"
+    # A cada 30 min, das 08h às 23h no horário de Brasília (UTC-3) = 11h-02h UTC.
+    - cron: "0,30 11-23,0-2 * * *"
   workflow_dispatch:
     inputs:
       seed_only:
