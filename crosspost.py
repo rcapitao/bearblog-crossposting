@@ -91,6 +91,60 @@ def bluesky_login() -> dict:
     return response.json()
 
 
+def get_og_image_url(page_url: str) -> str:
+    response = requests.get(page_url, timeout=30)
+    response.raise_for_status()
+    match = re.search(
+        r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
+        response.text,
+        re.IGNORECASE,
+    )
+    return match.group(1) if match else ""
+
+
+def upload_bluesky_thumb(session: dict, image_url: str) -> dict | None:
+    image_response = requests.get(image_url, timeout=30)
+    image_response.raise_for_status()
+    content_type = image_response.headers.get("Content-Type", "image/jpeg")
+
+    response = requests.post(
+        "https://bsky.social/xrpc/com.atproto.repo.uploadBlob",
+        headers={
+            "Authorization": f"Bearer {session['accessJwt']}",
+            "Content-Type": content_type,
+        },
+        data=image_response.content,
+        timeout=30,
+    )
+    response.raise_for_status()
+    return response.json()["blob"]
+
+
+def build_bluesky_embed(session: dict, entry, description: str) -> dict | None:
+    try:
+        image_url = get_og_image_url(entry.link)
+    except requests.HTTPError:
+        image_url = ""
+
+    if not image_url:
+        return None
+
+    try:
+        thumb = upload_bluesky_thumb(session, image_url)
+    except requests.HTTPError:
+        return None
+
+    return {
+        "$type": "app.bsky.embed.external",
+        "external": {
+            "uri": entry.link,
+            "title": entry.title,
+            "description": description[:300],
+            "thumb": thumb,
+        },
+    }
+
+
 def post_to_bluesky(entry, message: str) -> None:
     if not (BLUESKY_HANDLE and BLUESKY_APP_PASSWORD):
         print("Bluesky not configured, skipping.")
@@ -119,6 +173,10 @@ def post_to_bluesky(entry, message: str) -> None:
             }
         ],
     }
+
+    embed = build_bluesky_embed(session, entry, get_meta_description(entry))
+    if embed:
+        record["embed"] = embed
 
     response = requests.post(
         "https://bsky.social/xrpc/com.atproto.repo.createRecord",
