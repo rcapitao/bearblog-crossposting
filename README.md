@@ -27,6 +27,7 @@ Meta description do post
 - A meta description é extraída do campo `summary`/`description` do RSS (com tags HTML removidas).
 - Se o post não tiver meta description, é usado o conteúdo completo do post (campo `content` do RSS, com tags HTML removidas) na segunda parte da mensagem.
 - No Bluesky, o link na primeira linha é publicado como link clicável (rich text facet), não como texto simples.
+- No Bluesky, o post também inclui um card de preview do link (imagem `og:image` da página do post, título e descrição), igual ao que aparece ao colar um link manualmente. Se a página não tiver `og:image`, o post é publicado sem o card.
 - Se o post não tiver meta description nem conteúdo, só é publicada a primeira linha.
 
 ## Redes suportadas
